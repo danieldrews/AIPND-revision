@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # */AIPND-revision/intropyproject-classify-pet-images/print_results.py
 #                                                                             
-# PROGRAMMER: 
-# DATE CREATED:
+# PROGRAMMER: Daniel Drews 
+# DATE CREATED: 05-16-2020
 # REVISED DATE: 
 # PURPOSE: Create a function print_results that prints the results statistics
 #          from the results statistics dictionary (results_stats_dic). It 
@@ -62,5 +62,33 @@ def print_results(results_dic, results_stats_dic, model,
     Returns:
            None - simply printing results.
     """    
-    None
+    print('CNN Model:', model)
+    print('Number of Images:', results_stats_dic.get('n_images'))
+    print('Number of Dog Images:', results_stats_dic.get('n_dogs_img'))
+    print('Number of "Not-a" Dog Images:', results_stats_dic.get('n_notdogs_img'))
+
+    for key in results_stats_dic:
+        if key.startswith('pct_'):
+            print(key, results_stats_dic[key])
                 
+    if (print_incorrect_dogs and 
+        ( (results_stats_dic.get('n_correct_dogs') + results_stats_dic.get('n_correct_notdogs'))
+          != results_stats_dic.get('n_images') ) 
+       ):
+        print("\nINCORRECT Dog/NOT Dog Assignments:")
+        for key in results_dic:
+            if sum(results_dic[key][3:]) == 1:
+                if results_dic[key][3]:
+                    print(results_dic[key][0], 'is a Dog - Classified as NOT-A-DOG')
+                else:
+                    print(results_dic[key][0], 'is NOT-a-Dog - Classified as a-DOG')
+
+    if (print_incorrect_breed and 
+        (results_stats_dic['n_correct_dogs'] != results_stats_dic['n_correct_breed']) 
+       ):
+        print("\nINCORRECT Dog Breed Assignment:")
+        for key in results_dic:
+            if ( sum(results_dic[key][3:]) == 2 and
+                results_dic[key][2] == 0 ):
+                print("Real: {:>26}   Classifier: {:>30}".format(results_dic[key][0],
+                                                          results_dic[key][1]))
