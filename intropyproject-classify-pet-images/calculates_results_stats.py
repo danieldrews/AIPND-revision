@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # */AIPND-revision/intropyproject-classify-pet-images/calculates_results_stats.py
 #                                                                             
-# PROGRAMMER:
-# DATE CREATED:                                  
+# PROGRAMMER: Daniel Drews
+# DATE CREATED: 05-16-2020                                  
 # REVISED DATE: 
 # PURPOSE: Create a function calculates_results_stats that calculates the 
 #          statistics of the results of the programrun using the classifier's model 
@@ -68,6 +68,43 @@ def calculates_results_stats(results_dic):
                      and the classroom Item XX Calculating Results for details
                      on how to calculate the counts and statistics.
     """        
-    # Replace None with the results_stats_dic dictionary that you created with 
-    # this function 
-    return None
+
+    n_images = len(results_dic) #Number of Images
+    n_correct_dogs = 0 #Number of Correct Dog matches
+    n_dogs_img = 0 #Number of Dog Images
+    n_correct_notdogs = 0 #Number of Correct Non-Dog matches
+    n__not_dogs_img = 0 #Number of Not Dog Images
+    n_correct_breed = 0 #Number of Correct Breed matches
+    n_match = 0 #Number of label matches
+
+    for key in results_dic:
+        res = results_dic[key]
+
+        if res[3]:
+            n_dogs_img += 1
+            if res[4]:
+                n_correct_dogs += 1
+            if res[2]:
+                n_correct_breed += 1
+        else:
+            n__not_dogs_img += 1
+            if not res[4]:
+                n_correct_notdogs += 1
+
+        if res[2]:
+            n_match += 1
+
+    return {
+        "n_images": n_images,
+        "n_dogs_img": n_dogs_img,
+        "n_notdogs_img": n_images - n_dogs_img,
+        "n_match": n_match,
+        "n_correct_dogs": n_correct_dogs,
+        "n_correct_notdogs": n_correct_notdogs,
+        "n_correct_breed": n_correct_breed,
+        "pct_match": (n_match/n_images) * 100,
+        "pct_correct_dogs": (n_correct_dogs/n_dogs_img) * 100,
+        "pct_correct_breed": (n_correct_breed/n_dogs_img) * 100,
+        "pct_correct_notdogs": (n_correct_notdogs/n__not_dogs_img) * 100
+    }
+    
